@@ -261,7 +261,9 @@ shell_command:
 With variables:
 ```
 shell_command:
-  steam_set_locked: Mo-Su 00:00 00:00
+  steam_set_locked: >-
+    sh -c 'python3 /config/scripts/steam_playtime_week.py Mo-So 00:00 00:00 && python3 /config/scripts/steam_playtime_today.py 0:00 0:00'
+  
   steam_set_weekly_plan: >
     python3 /config/scripts/steam_playtime_week.py {{ states('input_text.kid_good_night_alarm_day_workingDays') }} {{ states('input_datetime.kid_good_night_alarm_heute_morgen')[:5] }} {{ states('input_datetime.kid_good_night_alarm_workingDays')[:5] }} {{ states('input_text.kid_good_night_alarm_day_notWorkingDays') }} {{ states('input_datetime.kid_good_night_alarm_morning')[:5] }} {{ states('input_datetime.kid_good_night_alarm_notWorkingDays')[:5] }}
 ```
