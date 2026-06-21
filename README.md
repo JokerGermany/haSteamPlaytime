@@ -135,7 +135,7 @@ ExecStart=/usr/bin/podman run \
 	--health-retries 3 \
 	--health-start-period 30s \
 	--health-timeout 10s \
-	ghcr.io/JokerGermany/familylink-auth:standalone
+	ghcr.io/jokergermany/familylink-auth:standalone
 
 ExecStop=/usr/bin/podman stop \
 	--ignore -t 10 \
