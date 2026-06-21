@@ -152,6 +152,13 @@ NotifyAccess=all
 [Install]
 WantedBy=default.target
 ```
+## Important
+
+If you use Family View PIN unlock, change:
+
+```ini
+-e STEAM_REQUIRE_PARENTAL=false \
+```
 
 to:
 
@@ -159,8 +166,6 @@ to:
 -e STEAM_REQUIRE_PARENTAL=true \
 -e STEAM_PARENTAL_PIN=1234 \
 ```
-
----
 
 # 5. Reload and start the service
 
