@@ -79,17 +79,7 @@ podman --version
 ```
 
 ---
-
-# 4. Clone the repository
-
-Clone my modified HAFamilyLink repository:
-
-```bash
-cd /mnt/smarthome
-git clone https://github.com/JokerGermany/HAFamilyLink
-```
-
-# 5. Create the systemd service
+# 4. Create the systemd service
 
 Create a systemd service file for the Podman container.
 
@@ -118,6 +108,7 @@ RequiresMountsFor=%t/containers
 Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=always
 TimeoutStopSec=70
+
 ExecStart=/usr/bin/podman run \
 	--cidfile=%t/%n.ctr-id \
 	--cgroups=no-conmon \
@@ -130,7 +121,6 @@ ExecStart=/usr/bin/podman run \
 	-p 6080:6080 \
 	-v /mnt/smarthome/familylink-auth:/share/familylink:rw \
 	-v /mnt/smarthome/homeassistant/config/steam-auth:/share/steam-auth:rw \
-	-v /mnt/smarthome/HAFamilyLink/familylink-playwright/app:/app/app:rw \
 	-e LOG_LEVEL=info \
 	-e AUTH_TIMEOUT=300 \
 	-e SESSION_DURATION=86400 \
@@ -140,31 +130,27 @@ ExecStart=/usr/bin/podman run \
 	-e STEAM_STATE_FILE=/share/steam-auth/steam-state.json \
 	-e STEAM_LOGIN_TIMEOUT=300 \
 	-e STEAM_REQUIRE_PARENTAL=false \
-	--health-cmd CMD,curl,-f,http://localhost:8099/api/health \
+	--health-cmd "curl -f http://localhost:8099/api/health || exit 1" \
 	--health-interval 30s \
 	--health-retries 3 \
 	--health-start-period 30s \
 	--health-timeout 10s \
-	ghcr.io/noiwid/familylink-auth:standalone
+	ghcr.io/JokerGermany/familylink-auth:standalone
+
 ExecStop=/usr/bin/podman stop \
 	--ignore -t 10 \
 	--cidfile=%t/%n.ctr-id
+
 ExecStopPost=/usr/bin/podman rm \
 	-f \
 	--ignore -t 10 \
 	--cidfile=%t/%n.ctr-id
+
 Type=notify
 NotifyAccess=all
 
 [Install]
 WantedBy=default.target
-
-## Important
-
-If you use Family View PIN unlock, change:
-
-```ini
--e STEAM_REQUIRE_PARENTAL=false \
 ```
 
 to:
@@ -176,7 +162,7 @@ to:
 
 ---
 
-# 6. Reload and start the service
+# 5. Reload and start the service
 
 Run:
 
@@ -196,7 +182,7 @@ podman logs familylink-auth --tail 100
 
 ---
 
-# 7. Test the container
+# 6. Test the container
 
 Check the API:
 
